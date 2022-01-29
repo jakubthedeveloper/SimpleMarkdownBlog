@@ -1,0 +1,21 @@
+#!/usr/bin/env php
+<?php
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+// Create the Application
+$application = new Symfony\Component\Console\Application;
+
+// Register commands
+$application->add(
+    new \MarkdownBlog\Console\GeneratePages(
+        configDir: __DIR__ . '/../config/',
+        markdownDir: __DIR__ . '/../markdown/',
+        outputDir: __DIR__ . '/../public/',
+        yamlParser: new \MarkdownBlog\Parser\PagesConfigParser(),
+        markdownToHtml: new \MarkdownBlog\Transformer\MarkdownToHtml()
+    )
+);
+
+// Run it
+$application->run();

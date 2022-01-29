@@ -1,0 +1,8 @@
+1. Tag for inserting posts list into a page
+2. Page template (html, css)
+3. PhpUnit tests
+4. PhpStan
+5. GitHub actions
+6. Example blog preview (GitHub pages?)
+7. Refactor GeneratePages command
+

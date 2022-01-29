@@ -1,0 +1,12 @@
+{
+  "autoload": {
+    "psr-4": {"MarkdownBlog\\": "src"}
+  },
+  "require": {
+    "php": ">=8.1",
+    "symfony/console": "^5.4",
+    "twig/twig": "^3.0",
+    "symfony/yaml": "^6.0",
+    "erusev/parsedown": "^1.7"
+  }
+}
