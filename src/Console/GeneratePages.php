@@ -3,7 +3,7 @@
 namespace MarkdownBlog\Console;
 
 use MarkdownBlog\Exception\InvalidConfiguration;
-use MarkdownBlog\Parser\YamlParserInterface;
+use MarkdownBlog\Parser\ConfigParserInterface;
 use MarkdownBlog\Transformer\MarkdownToHtmlInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -14,10 +14,10 @@ class GeneratePages extends Command
     protected static $defaultName = 'generate:pages';
 
     public function __construct(
-        private string $configDir,
-        private string $markdownDir,
-        private string $outputDir,
-        private YamlParserInterface $yamlParser,
+        private string                  $configDir,
+        private string                  $markdownDir,
+        private string                  $outputDir,
+        private ConfigParserInterface   $configParser,
         private MarkdownToHtmlInterface $markdownToHtml
     ) {
         parent::__construct(self::$defaultName);
@@ -44,7 +44,7 @@ class GeneratePages extends Command
 
         $yamlContents = file_get_contents($this->configDir . '/pages.yaml');
 
-        return $this->yamlParser->parse($yamlContents);
+        return $this->configParser->parse($yamlContents);
     }
 
     private function generateHtml(array $config): void

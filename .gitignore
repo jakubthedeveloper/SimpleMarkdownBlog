@@ -2,3 +2,5 @@ vendor
 composer.lock
 public/*.html
 .idea
+coverage/
+.phpunit.cache

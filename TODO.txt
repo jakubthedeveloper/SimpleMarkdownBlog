@@ -6,3 +6,5 @@
 6. GitHub actions
 7. Example blog preview (GitHub pages?)
 8. Refactor GeneratePages command
+9. Command for generating missing pages-config entries
+10. Readme

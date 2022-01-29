@@ -12,7 +12,9 @@ $application->add(
         configDir: __DIR__ . '/../config/',
         markdownDir: __DIR__ . '/../markdown/',
         outputDir: __DIR__ . '/../public/',
-        yamlParser: new \MarkdownBlog\Parser\PagesConfigParser(),
+        configParser: new \MarkdownBlog\Parser\PagesConfigParser(
+                yamlParser: new \MarkdownBlog\Parser\YamlParser()
+        ),
         markdownToHtml: new \MarkdownBlog\Transformer\MarkdownToHtml()
     )
 );
