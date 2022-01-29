@@ -1,8 +1,8 @@
 1. Tag for inserting posts list into a page
-2. Page template (html, css)
-3. PhpUnit tests
-4. PhpStan
-5. GitHub actions
-6. Example blog preview (GitHub pages?)
-7. Refactor GeneratePages command
-
+2. Side menu
+3. Page template (html, css)
+4. PhpUnit tests
+5. PhpStan
+6. GitHub actions
+7. Example blog preview (GitHub pages?)
+8. Refactor GeneratePages command
