@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MarkdownBlog\Generator;
 
+use MarkdownBlog\DTO\PageConfigDto;
 use MarkdownBlog\IO\FileLoaderInterface;
 use MarkdownBlog\IO\FileWriterInterface;
 use MarkdownBlog\Parser\YamlParser;
@@ -15,6 +16,7 @@ use PHPUnit\Framework\TestCase;
  * @property MarkdownToHtmlInterface|\PHPUnit\Framework\MockObject\MockObject $markdownToHtml
  * @property FileLoaderInterface|\PHPUnit\Framework\MockObject\MockObject $fileLoader
  * @property FileWriterInterface|\PHPUnit\Framework\MockObject\MockObject $fileWriter
+ * @property ListGeneratorInterface|\PHPUnit\Framework\MockObject\MockObject $pagesListGenerator
  * @property HtmlPageGenerator $generator
  */
 class HtmlPageGeneratorTest extends TestCase
@@ -27,6 +29,7 @@ class HtmlPageGeneratorTest extends TestCase
         $this->markdownToHtml = $this->createMock(MarkdownToHtmlInterface::class);
         $this->fileLoader = $this->createMock(FileLoaderInterface::class);
         $this->fileWriter = $this->createMock(FileWriterInterface::class);
+        $this->pagesListGenerator = $this->createMock(ListGeneratorInterface::class);
 
         $this->generator = new HtmlPageGenerator(
             markdownDir: "test_markdown_dir",
@@ -34,7 +37,8 @@ class HtmlPageGeneratorTest extends TestCase
             templateDir: "test_template_dir",
             markdownToHtml: $this->markdownToHtml,
             fileLoader: $this->fileLoader,
-            fileWriter: $this->fileWriter
+            fileWriter: $this->fileWriter,
+            pagesListGenerator: $this->pagesListGenerator
         );
     }
 
@@ -91,9 +95,12 @@ class HtmlPageGeneratorTest extends TestCase
             );
 
         $this->generator->generate(
-            markdownFile: "test_markdown_file",
-            outputFile: self::TEST_OUTPUT_FILE,
-            templateFile: "test_template_file"
+            new PageConfigDto(
+                title: "test title",
+                markdownFile: "test_markdown_file",
+                outputFile: self::TEST_OUTPUT_FILE,
+                templateFile: "test_template_file"
+            )
         );
     }
 }

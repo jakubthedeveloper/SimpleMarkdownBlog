@@ -2,20 +2,31 @@
 
 namespace MarkdownBlog\Parser;
 
+use MarkdownBlog\DTO\PageConfigDto;
 use MarkdownBlog\Exception\InvalidConfiguration;
 use MarkdownBlog\Exception\UnableToParse;
+use MarkdownBlog\IO\FileLoader;
 use Symfony\Component\Yaml\Exception\ParseException;
 
-class PagesConfigParser implements ConfigParserInterface
+class PagesConfigParser implements PagesConfigParserInterface
 {
+    private const REQUIRED_PROPERTIES = [
+        'title',
+        'markdown_file',
+        'output_file',
+    ];
+
     public function __construct(
-        private YamlParserInterface $yamlParser
+        private YamlParserInterface $yamlParser,
+        private FileLoader $fileLoader
     ) {
 
     }
 
-    public function parse(string $yamlContents): array
+    public function parse(string $yamlFilePath): iterable
     {
+        $yamlContents = $this->fileLoader->getFileContent($yamlFilePath);
+
         try {
             $config = $this->yamlParser->parse($yamlContents);
         } catch (ParseException $exception) {
@@ -26,7 +37,11 @@ class PagesConfigParser implements ConfigParserInterface
 
         $this->validateConfig($config);
 
-        return $config;
+        foreach ($config['pages'] as $key => $page) {
+            yield PageConfigDto::fromArray(
+                $page
+            );
+        }
     }
 
     private function validateConfig(array $config): void
@@ -38,16 +53,12 @@ class PagesConfigParser implements ConfigParserInterface
         }
 
         foreach ($config['pages'] as $key => $page) {
-            if (false === array_key_exists('markdown_file', $page)) {
-                throw new InvalidConfiguration(
-                    sprintf("Pages configuration block `%s` does not have `markdown_file` property.", $key)
-                );
-            }
-
-            if (false === array_key_exists('output_file', $page)) {
-                throw new InvalidConfiguration(
-                    sprintf("Pages configuration block `%s` does not have `output_file` property.", $key)
-                );
+            foreach (self::REQUIRED_PROPERTIES as $property) {
+                if (false === array_key_exists($property, $page)) {
+                    throw new InvalidConfiguration(
+                        sprintf("Pages configuration block `%s` does not have `%s` property.", $key, $property)
+                    );
+                }
             }
         }
     }

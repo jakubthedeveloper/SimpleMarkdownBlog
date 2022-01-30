@@ -1,9 +1,11 @@
 pages:
   index:
+    title: My Blog
     markdown_file: index.md
     output_file: index.html
     template_file: index.html
   about:
+    title: About
     markdown_file: about.md
     output_file: about.html
     template_file: single.html

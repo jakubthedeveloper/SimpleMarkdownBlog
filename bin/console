@@ -12,7 +12,7 @@ $application->add(
         configDir: __DIR__ . '/../config/',
         templatesDir: __DIR__ . '/../template/',
         publicDir: __DIR__ . '/../public/',
-        configParser: new \MarkdownBlog\Parser\PagesConfigParser(
+        pagesConfigParser: new \MarkdownBlog\Parser\PagesConfigParser(
             yamlParser: new \MarkdownBlog\Parser\YamlParser()
         ),
         pageGenerator: new \MarkdownBlog\Generator\HtmlPageGenerator(
@@ -21,7 +21,8 @@ $application->add(
             templateDir: __DIR__ . '/../template/',
             markdownToHtml: new \MarkdownBlog\Transformer\MarkdownToHtml(),
             fileLoader: new \MarkdownBlog\IO\FileLoader(),
-            fileWriter: new \MarkdownBlog\IO\FileWriter()
+            fileWriter: new \MarkdownBlog\IO\FileWriter(),
+            pagesListGenerator: new \MarkdownBlog\Generator\PagesListGenerator()
         )
     )
 );

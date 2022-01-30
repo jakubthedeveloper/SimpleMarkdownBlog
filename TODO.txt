@@ -6,7 +6,6 @@
 - Readme
 - bin/console - change __DIR__ to a solution that does not require /../ in paths
 - pages meta tags in yaml config
-- replace __PAGES_LIST__ in HtmlPageGenerator
-    - use title from config as link text
-    - create list generator service
+- finish PagesListGenerator
+- convert this app to library (composer package)
 

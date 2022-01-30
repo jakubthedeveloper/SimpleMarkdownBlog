@@ -2,6 +2,7 @@
 
 namespace MarkdownBlog\Generator;
 
+use MarkdownBlog\DTO\PageConfigDto;
 use MarkdownBlog\IO\FileLoaderInterface;
 use MarkdownBlog\IO\FileWriterInterface;
 use MarkdownBlog\Transformer\MarkdownToHtmlInterface;
@@ -14,21 +15,22 @@ class HtmlPageGenerator implements PageGeneratorInterface
         private string                  $templateDir,
         private MarkdownToHtmlInterface $markdownToHtml,
         private FileLoaderInterface     $fileLoader,
-        private FileWriterInterface     $fileWriter
+        private FileWriterInterface     $fileWriter,
+        private ListGeneratorInterface  $pagesListGenerator
     ) {
 
     }
 
-    public function generate(string $markdownFile, string $outputFile, string $templateFile): void
+    public function generate(PageConfigDto $page): void
     {
-        $markdown = $this->fileLoader->getFileContent($this->markdownDir . $markdownFile);
-        $template = $this->fileLoader->getFileContent($this->templateDir . $templateFile);
+        $markdown = $this->fileLoader->getFileContent($this->markdownDir . $page->markdownFile);
+        $template = $this->fileLoader->getFileContent($this->templateDir . $page->templateFile);
 
         $pageHtml = $this->markdownToHtml->transformText($markdown);
         $fullHtml = $this->replaceTags($template, $pageHtml);
 
         $this->fileWriter->saveFile(
-            $this->outputDir . $outputFile,
+            $this->outputDir . $page->outputFile,
             $fullHtml
         );
     }
@@ -41,9 +43,17 @@ class HtmlPageGenerator implements PageGeneratorInterface
             $template
         );
 
-        // Replace another tags here
+        if (false !== stripos($html, '__PAGES_LIST__')) {
+            $pagesList = $this->pagesListGenerator->generate();
 
-        // TODO: replace __PAGES_LIST__
+            $html = str_replace(
+                '__PAGES_LIST__',
+                $pagesList,
+                $html
+            );
+        }
+
+        // Replace another tags here
 
         return $html;
     }

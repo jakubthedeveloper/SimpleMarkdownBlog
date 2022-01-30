@@ -4,13 +4,16 @@ declare(strict_types=1);
 
 namespace MarkdownBlog\Parser;
 
+use MarkdownBlog\DTO\PageConfigDto;
 use MarkdownBlog\Exception\InvalidConfiguration;
 use MarkdownBlog\Exception\UnableToParse;
+use MarkdownBlog\IO\FileLoader;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Yaml\Exception\ParseException;
 
 /**
  * @property YamlParserInterface|\PHPUnit\Framework\MockObject\MockObject $yamlParser
+ * @property FileLoader|\PHPUnit\Framework\MockObject\MockObject $fileLoader
  * @property PagesConfigParser $pagesConfigParser
  */
 class PagesConfigParserTest extends TestCase
@@ -18,135 +21,147 @@ class PagesConfigParserTest extends TestCase
     public function setUp(): void
     {
         $this->yamlParser = $this->createMock(YamlParserInterface::class);
+        $this->fileLoader = $this->createMock(FileLoader::class);
+
         $this->pagesConfigParser = new PagesConfigParser(
-            $this->yamlParser
+            yamlParser: $this->yamlParser,
+            fileLoader: $this->fileLoader
         );
     }
 
     public function testValidConfigurationIsParsedSuccessfully(): void
     {
-        $yaml = <<<YAML
-        pages:
-          index:
-            markdown_file: index.md
-            output_file: index.html
-          about:
-            markdown_file: about.md
-            output_file: about.html
-        YAML;
-
-        $parsed = [
+        $pagesData = [
             'pages' => [
                 'index' => [
+                    'title' => 'My first page',
                     'markdown_file' => 'index.md',
                     'output_file' => 'index.html'
                 ],
                 'about' => [
+                    'title' => 'About',
                     'markdown_file' => 'about.md',
-                    'output_file' => 'about.html'
+                    'output_file' => 'about.html',
+                    'template_file' => 'some.html'
                 ]
             ]
         ];
 
+        $this->fileLoader->expects($this->once())
+            ->method("getFileContent")
+            ->willReturn("Parsed content");
+
         $this->yamlParser->expects($this->once())
             ->method("parse")
-            ->willReturn($parsed);
+            ->willReturn($pagesData);
 
-        $actual = $this->pagesConfigParser->parse(
-            yamlContents: $yaml
-        );
+        $actual = $this->pagesConfigParser->parse("pages.yaml");
+        $actual = iterator_to_array($actual);
 
-        $this->assertEquals($parsed, $actual);
+        $this->assertInstanceOf(PageConfigDto::class, $actual[0]);
+        $this->assertEquals($pagesData['pages']['index']['title'], $actual[0]->title);
+        $this->assertEquals($pagesData['pages']['index']['markdown_file'], $actual[0]->markdownFile);
+        $this->assertEquals($pagesData['pages']['index']['output_file'], $actual[0]->outputFile);
+        $this->assertEquals('single.html', $actual[0]->templateFile); // default
+
+        $this->assertInstanceOf(PageConfigDto::class, $actual[1]);
+        $this->assertEquals($pagesData['pages']['about']['title'], $actual[1]->title);
+        $this->assertEquals($pagesData['pages']['about']['markdown_file'], $actual[1]->markdownFile);
+        $this->assertEquals($pagesData['pages']['about']['output_file'], $actual[1]->outputFile);
+        $this->assertEquals('some.html', $actual[1]->templateFile);
     }
 
     public function testCannotParseInvalidYaml(): void
     {
-        $yaml = <<<YAML
-        some invalid yaml
-        YAML;
+        $this->fileLoader->expects($this->once())
+            ->method("getFileContent")
+            ->willReturn("Parsed content");
 
         $this->yamlParser->expects($this->once())
             ->method("parse")
             ->willThrowException(
-               new ParseException("I can't parse this yaml.")
+                new ParseException("I can't parse this yaml.")
             );
 
         $this->expectException(UnableToParse::class);
         $this->expectDeprecationMessage("Unable to parse config file: I can't parse this yaml.");
 
-        $this->pagesConfigParser->parse(
-            yamlContents: $yaml
-        );
+        iterator_to_array($this->pagesConfigParser->parse("some.yaml"));
     }
 
     public function testExceptionIfPagesSectionDoesNotExist(): void
     {
-        $yaml = <<<YAML
-        something:
-            some_key: some_value
-        YAML;
+        $this->fileLoader->expects($this->once())
+            ->method("getFileContent")
+            ->willReturn("Parsed content");
+
+        $this->yamlParser->expects($this->once())
+            ->method("parse")
+            ->willReturn([
+                'something' => [
+                    'some_key' => 'some_value'
+                ]
+            ]);
 
         $this->expectException(InvalidConfiguration::class);
         $this->expectDeprecationMessage("Pages configuration does not have `pages` block.");
 
-        $this->pagesConfigParser->parse(
-            yamlContents: $yaml
-        );
+        iterator_to_array($this->pagesConfigParser->parse("some.yaml"));
     }
 
-    public function testExceptionIfMarkdownFilePropertyIsMissing(): void
+    /**
+     * @dataProvider requiredPropertyExceptions
+     */
+    public function testExceptionIfRequiredPropertyIsMissing(array $parsedData, string $missingProperty): void
     {
-        $yaml = <<<YAML
-        pages:
-          index:
-            output_file: index.html
-        YAML;
-
-        $parsed = [
-            'pages' => [
-                'index' => [
-                    'output_file' => 'index.html'
-                ]
-            ]
-        ];
-
         $this->yamlParser->expects($this->once())
             ->method("parse")
-            ->willReturn($parsed);
+            ->willReturn($parsedData);
 
         $this->expectException(InvalidConfiguration::class);
-        $this->expectDeprecationMessage("Pages configuration block `index` does not have `markdown_file` property.");
-
-        $this->pagesConfigParser->parse(
-            yamlContents: $yaml
+        $this->expectDeprecationMessage(
+            sprintf("Pages configuration block `index` does not have `%s` property.", $missingProperty)
         );
+
+        iterator_to_array($this->pagesConfigParser->parse("some.yaml"));
     }
 
-    public function testExceptionIfOutputFilePropertyIsMissing(): void
+    private function requiredPropertyExceptions(): array
     {
-        $yaml = <<<YAML
-        pages:
-          index:
-            markdown_file: index.md
-        YAML;
-
-        $parsed = [
-            'pages' => [
-                'index' => [
-                    'markdown_file' => 'index.md'
-                ]
-            ]
+        return [
+            [
+                [
+                    'pages' => [
+                        'index' => [
+                            'output_file' => 'index.html',
+                            'markdown_file' => 'index.md'
+                        ]
+                    ]
+                ],
+                'title'
+            ],
+            [
+                [
+                    'pages' => [
+                        'index' => [
+                            'title' => 'My page',
+                            'markdown_file' => 'index.md'
+                        ]
+                    ]
+                ],
+                'output_file'
+            ],
+            [
+                [
+                    'pages' => [
+                        'index' => [
+                            'title' => 'My page',
+                            'output_file' => 'index.html',
+                        ]
+                    ]
+                ],
+                'markdown_file'
+            ],
         ];
-
-        $this->yamlParser->expects($this->once())
-            ->method("parse")
-            ->willReturn($parsed);
-
-        $this->expectException(InvalidConfiguration::class);
-        $this->expectDeprecationMessage("Pages configuration block `index` does not have `output_file` property.");
-
-        $this->pagesConfigParser->parse(
-            yamlContents: $yaml
-        );
     }
 }

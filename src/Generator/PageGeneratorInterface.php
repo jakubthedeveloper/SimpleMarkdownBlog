@@ -2,7 +2,9 @@
 
 namespace MarkdownBlog\Generator;
 
+use MarkdownBlog\DTO\PageConfigDto;
+
 interface PageGeneratorInterface
 {
-    public function generate(string $markdownFile, string $outputFile, string $templateFile): void;
+    public function generate(PageConfigDto $page): void;
 }

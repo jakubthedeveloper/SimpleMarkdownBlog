@@ -2,9 +2,10 @@
 
 namespace MarkdownBlog\Console;
 
+use MarkdownBlog\DTO\PageConfigDto;
 use MarkdownBlog\Exception\InvalidConfiguration;
 use MarkdownBlog\Generator\PageGeneratorInterface;
-use MarkdownBlog\Parser\ConfigParserInterface;
+use MarkdownBlog\Parser\PagesConfigParserInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -12,14 +13,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 class GeneratePages extends Command
 {
     protected static $defaultName = 'generate:pages';
-    private const DEFAULT_TEMPLATE = 'single.html';
 
     public function __construct(
-        private string                  $configDir,
-        private string                  $templatesDir,
-        private string                  $publicDir,
-        private ConfigParserInterface   $configParser,
-        private PageGeneratorInterface  $pageGenerator
+        private string                     $configDir,
+        private string                     $templatesDir,
+        private string                     $publicDir,
+        private PagesConfigParserInterface $pagesConfigParser,
+        private PageGeneratorInterface     $pageGenerator
     ) {
         parent::__construct(self::$defaultName);
     }
@@ -42,26 +42,22 @@ class GeneratePages extends Command
         return Command::SUCCESS;
     }
 
-    private function getPagesConfig(): array
+    /**
+     * @return iterable|PageConfigDto[]
+     */
+    private function getPagesConfig(): iterable
     {
-        if (false === file_exists($this->configDir . '/pages.yaml')) {
-            throw new InvalidConfiguration("Pages config file does not exist.");
-        }
-
-        $yamlContents = file_get_contents($this->configDir . '/pages.yaml');
-
-        return $this->configParser->parse($yamlContents);
+        return $this->pagesConfigParser->parse($this->configDir . '/pages.yaml');
     }
 
-    private function generateHtml(array $config): void
+    private function generateHtml(iterable $pages): void
     {
-        foreach ($config['pages'] as $key => $page)
+        /**
+         * @var PageConfigDto $page
+         */
+        foreach ($pages as $page)
         {
-            $this->pageGenerator->generate(
-                markdownFile: $page['markdown_file'],
-                outputFile: $page['output_file'],
-                templateFile: $page['template_file'] ?? self::DEFAULT_TEMPLATE
-            );
+            $this->pageGenerator->generate($page);
         }
     }
 }
