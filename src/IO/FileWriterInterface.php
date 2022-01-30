@@ -4,5 +4,5 @@ namespace MarkdownBlog\IO;
 
 interface FileWriterInterface
 {
-    public function saveFile(string $filePath, string $content): string;
+    public function saveFile(string $filePath, string $content): void;
 }

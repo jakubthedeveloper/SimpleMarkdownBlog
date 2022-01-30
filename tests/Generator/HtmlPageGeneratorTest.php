@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace MarkdownBlog\Parser;
+namespace MarkdownBlog\Generator;
 
-use MarkdownBlog\Generator\HtmlPageGenerator;
 use MarkdownBlog\IO\FileLoaderInterface;
 use MarkdownBlog\IO\FileWriterInterface;
+use MarkdownBlog\Parser\YamlParser;
 use MarkdownBlog\Transformer\MarkdownToHtmlInterface;
 use PHPUnit\Framework\TestCase;
 
@@ -31,6 +31,7 @@ class HtmlPageGeneratorTest extends TestCase
         $this->generator = new HtmlPageGenerator(
             markdownDir: "test_markdown_dir",
             outputDir: self::TEST_OUTPUT_DIR,
+            templateDir: "test_template_dir",
             markdownToHtml: $this->markdownToHtml,
             fileLoader: $this->fileLoader,
             fileWriter: $this->fileWriter
@@ -45,10 +46,18 @@ class HtmlPageGeneratorTest extends TestCase
                 Test content
                 MD;
 
-        $this->fileLoader->expects($this->once())
+        $htmlTemplate = <<<MD
+        <html>
+            <head></head>
+            <body>__PAGE_CONTENT__</body>
+        </html>
+        MD;
+
+        $this->fileLoader->expects($this->exactly(2))
             ->method("getFileContent")
-            ->willReturn(
-                $mdText
+            ->willReturnOnConsecutiveCalls(
+                $mdText,
+                $htmlTemplate
             );
 
         $generatedHtml = <<<HTML
@@ -65,16 +74,26 @@ class HtmlPageGeneratorTest extends TestCase
                 $generatedHtml
             );
 
+        $expectedHtml = <<<HTML
+        <html>
+            <head></head>
+            <body><h1>Test header</h1>
+        <p>Test content</p></body>
+        </html>
+        HTML;
+
+
         $this->fileWriter->expects($this->once())
             ->method("saveFile")
             ->with(
                 self::TEST_OUTPUT_DIR . self::TEST_OUTPUT_FILE,
-                $generatedHtml
+                $expectedHtml
             );
 
         $this->generator->generate(
             markdownFile: "test_markdown_file",
-            outputFile: self::TEST_OUTPUT_FILE
+            outputFile: self::TEST_OUTPUT_FILE,
+            templateFile: "test_template_file"
         );
     }
 }

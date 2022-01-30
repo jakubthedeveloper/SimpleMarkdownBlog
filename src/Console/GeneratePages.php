@@ -12,9 +12,12 @@ use Symfony\Component\Console\Output\OutputInterface;
 class GeneratePages extends Command
 {
     protected static $defaultName = 'generate:pages';
+    private const DEFAULT_TEMPLATE = 'single.html';
 
     public function __construct(
         private string                  $configDir,
+        private string                  $templatesDir,
+        private string                  $publicDir,
         private ConfigParserInterface   $configParser,
         private PageGeneratorInterface  $pageGenerator
     ) {
@@ -30,6 +33,11 @@ class GeneratePages extends Command
     {
         $config = $this->getPagesConfig();
         $this->generateHtml($config);
+
+        copy(
+            $this->templatesDir . '/css/main.css',
+            $this->publicDir . '/css/main.css'
+        );
 
         return Command::SUCCESS;
     }
@@ -50,8 +58,9 @@ class GeneratePages extends Command
         foreach ($config['pages'] as $key => $page)
         {
             $this->pageGenerator->generate(
-                $page['markdown_file'],
-                $page['output_file']
+                markdownFile: $page['markdown_file'],
+                outputFile: $page['output_file'],
+                templateFile: $page['template_file'] ?? self::DEFAULT_TEMPLATE
             );
         }
     }

@@ -1,6 +1,7 @@
 vendor
 composer.lock
 public/*.html
+public/css/*.css
 .idea
 coverage/
 .phpunit.cache

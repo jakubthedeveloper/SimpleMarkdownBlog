@@ -11,6 +11,7 @@ class HtmlPageGenerator implements PageGeneratorInterface
     public function __construct(
         private string                  $markdownDir,
         private string                  $outputDir,
+        private string                  $templateDir,
         private MarkdownToHtmlInterface $markdownToHtml,
         private FileLoaderInterface     $fileLoader,
         private FileWriterInterface     $fileWriter
@@ -18,15 +19,32 @@ class HtmlPageGenerator implements PageGeneratorInterface
 
     }
 
-    public function generate(string $markdownFile, string $outputFile): void
+    public function generate(string $markdownFile, string $outputFile, string $templateFile): void
     {
         $markdown = $this->fileLoader->getFileContent($this->markdownDir . $markdownFile);
+        $template = $this->fileLoader->getFileContent($this->templateDir . $templateFile);
 
-        $html = $this->markdownToHtml->transformText($markdown);
+        $pageHtml = $this->markdownToHtml->transformText($markdown);
+        $fullHtml = $this->replaceTags($template, $pageHtml);
 
         $this->fileWriter->saveFile(
             $this->outputDir . $outputFile,
-            $html
+            $fullHtml
         );
+    }
+
+    private function replaceTags(string $template, string $pageHtml): string
+    {
+        $html = str_replace(
+            '__PAGE_CONTENT__',
+            $pageHtml,
+            $template
+        );
+
+        // Replace another tags here
+
+        // TODO: replace __PAGES_LIST__
+
+        return $html;
     }
 }
