@@ -10,12 +10,16 @@ $application = new Symfony\Component\Console\Application;
 $application->add(
     new \MarkdownBlog\Console\GeneratePages(
         configDir: __DIR__ . '/../config/',
-        markdownDir: __DIR__ . '/../markdown/',
-        outputDir: __DIR__ . '/../public/',
         configParser: new \MarkdownBlog\Parser\PagesConfigParser(
-                yamlParser: new \MarkdownBlog\Parser\YamlParser()
+            yamlParser: new \MarkdownBlog\Parser\YamlParser()
         ),
-        markdownToHtml: new \MarkdownBlog\Transformer\MarkdownToHtml()
+        pageGenerator: new \MarkdownBlog\Generator\HtmlPageGenerator(
+            markdownDir: __DIR__ . '/../markdown/',
+            outputDir: __DIR__ . '/../public/',
+            markdownToHtml: new \MarkdownBlog\Transformer\MarkdownToHtml(),
+            fileLoader: new \MarkdownBlog\IO\FileLoader(),
+            fileWriter: new \MarkdownBlog\IO\FileWriter()
+        )
     )
 );
 

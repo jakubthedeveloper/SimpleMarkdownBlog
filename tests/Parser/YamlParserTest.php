@@ -11,7 +11,6 @@ use PHPUnit\Framework\TestCase;
  */
 class YamlParserTest extends TestCase
 {
-
     public function setUp(): void
     {
         $this->yamlParser = new YamlParser();

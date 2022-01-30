@@ -3,8 +3,8 @@
 namespace MarkdownBlog\Console;
 
 use MarkdownBlog\Exception\InvalidConfiguration;
+use MarkdownBlog\Generator\PageGeneratorInterface;
 use MarkdownBlog\Parser\ConfigParserInterface;
-use MarkdownBlog\Transformer\MarkdownToHtmlInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -15,10 +15,8 @@ class GeneratePages extends Command
 
     public function __construct(
         private string                  $configDir,
-        private string                  $markdownDir,
-        private string                  $outputDir,
         private ConfigParserInterface   $configParser,
-        private MarkdownToHtmlInterface $markdownToHtml
+        private PageGeneratorInterface  $pageGenerator
     ) {
         parent::__construct(self::$defaultName);
     }
@@ -51,17 +49,9 @@ class GeneratePages extends Command
     {
         foreach ($config['pages'] as $key => $page)
         {
-            if (false === file_exists($this->markdownDir . $page['markdown_file'])) {
-                throw new \Exception(
-                    sprintf("Markdown file %s does not exist.", $page['markdown_file'])
-                );
-            }
-
-            $markdown = file_get_contents($this->markdownDir . $page['markdown_file']);
-            $html = $this->markdownToHtml->transformText($markdown);
-            file_put_contents(
-                $this->outputDir . $page['output_file'],
-                $html
+            $this->pageGenerator->generate(
+                $page['markdown_file'],
+                $page['output_file']
             );
         }
     }
