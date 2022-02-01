@@ -5,7 +5,7 @@
 - Command for generating missing pages-config entries
 - Readme
 - bin/console - change __DIR__ to a solution that does not require /../ in paths
-- pages meta tags in yaml config
-- finish PagesListGenerator
+- add DI and use it
+- finish PagesListGenerator (add PagesConfig static service)
 - convert this app to library (composer package)
 

@@ -4,6 +4,8 @@ pages:
     markdown_file: index.md
     output_file: index.html
     template_file: index.html
+    description: My Blog start page
+    image: example.png
   about:
     title: About
     markdown_file: about.md

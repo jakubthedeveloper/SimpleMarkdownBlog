@@ -13,7 +13,8 @@ $application->add(
         templatesDir: __DIR__ . '/../template/',
         publicDir: __DIR__ . '/../public/',
         pagesConfigParser: new \MarkdownBlog\Parser\PagesConfigParser(
-            yamlParser: new \MarkdownBlog\Parser\YamlParser()
+            yamlParser: new \MarkdownBlog\Parser\YamlParser(),
+            fileLoader: new \MarkdownBlog\IO\FileLoader()
         ),
         pageGenerator: new \MarkdownBlog\Generator\HtmlPageGenerator(
             markdownDir: __DIR__ . '/../markdown/',

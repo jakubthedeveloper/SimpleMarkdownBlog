@@ -27,7 +27,7 @@ class HtmlPageGenerator implements PageGeneratorInterface
         $template = $this->fileLoader->getFileContent($this->templateDir . $page->templateFile);
 
         $pageHtml = $this->markdownToHtml->transformText($markdown);
-        $fullHtml = $this->replaceTags($template, $pageHtml);
+        $fullHtml = $this->replaceTags($template, $pageHtml, $page);
 
         $this->fileWriter->saveFile(
             $this->outputDir . $page->outputFile,
@@ -35,7 +35,7 @@ class HtmlPageGenerator implements PageGeneratorInterface
         );
     }
 
-    private function replaceTags(string $template, string $pageHtml): string
+    private function replaceTags(string $template, string $pageHtml, PageConfigDto $page): string
     {
         $html = str_replace(
             '__PAGE_CONTENT__',
@@ -49,6 +49,30 @@ class HtmlPageGenerator implements PageGeneratorInterface
             $html = str_replace(
                 '__PAGES_LIST__',
                 $pagesList,
+                $html
+            );
+        }
+
+        if (false !== stripos($html, '__TITLE__')) {
+            $html = str_replace(
+                '__TITLE__',
+                $page->title,
+                $html
+            );
+        }
+
+        if (false !== stripos($html, '__DESCRIPTION__')) {
+            $html = str_replace(
+                '__DESCRIPTION__',
+                $page->description ?? '',
+                $html
+            );
+        }
+
+        if (false !== stripos($html, '__IMAGE__')) {
+            $html = str_replace(
+                '__IMAGE__',
+                $page->image ? './images/' . $page->image : '',
                 $html
             );
         }

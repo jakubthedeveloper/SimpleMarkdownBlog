@@ -99,7 +99,9 @@ class HtmlPageGeneratorTest extends TestCase
                 title: "test title",
                 markdownFile: "test_markdown_file",
                 outputFile: self::TEST_OUTPUT_FILE,
-                templateFile: "test_template_file"
+                templateFile: "test_template_file",
+                description: "test description",
+                image: "test_image.png"
             )
         );
     }
