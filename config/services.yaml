@@ -1,0 +1,34 @@
+services:
+  yaml_parser:
+    class: \MarkdownBlog\Parser\YamlParser
+  file_loader:
+    class: \MarkdownBlog\IO\FileLoader
+  file_writer:
+    class: \MarkdownBlog\IO\FileWriter
+  pages_config_parser:
+    class: \MarkdownBlog\Parser\PagesConfigParser
+    arguments:
+      $yamlParser: '@yaml_parser'
+      $fileLoader: '@file_loader'
+  markdown_to_html:
+    class: \MarkdownBlog\Transformer\MarkdownToHtml
+  pages_list_generator:
+    class: \MarkdownBlog\Generator\PagesListGenerator
+  html_page_generator:
+    class: \MarkdownBlog\Generator\HtmlPageGenerator
+    arguments:
+      $markdownDir: 'markdown/'
+      $outputDir: 'public/'
+      $templateDir: 'template/'
+      $markdownToHtml: '@markdown_to_html'
+      $fileLoader: '@file_loader'
+      $fileWriter: '@file_writer'
+      $pagesListGenerator: '@pages_list_generator'
+  command.generate-pages:
+    class: \MarkdownBlog\Console\GeneratePages
+    arguments:
+      $configDir: 'config/'
+      $templatesDir: 'template/'
+      $publicDir: 'public/'
+      $pagesConfigParser: '@pages_config_parser'
+      $pageGenerator: '@html_page_generator'

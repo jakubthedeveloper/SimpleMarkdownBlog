@@ -4,8 +4,6 @@
 - Example blog preview (GitHub pages?)
 - Command for generating missing pages-config entries
 - Readme
-- bin/console - change __DIR__ to a solution that does not require /../ in paths
-- add DI and use it
-- finish PagesListGenerator (add PagesConfig static service)
+- finish PagesListGenerator
 - convert this app to library (composer package)
 

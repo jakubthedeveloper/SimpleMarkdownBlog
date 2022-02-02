@@ -1,31 +1,22 @@
 #!/usr/bin/env php
 <?php
 
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+
 require_once __DIR__ . '/../vendor/autoload.php';
+
+$containerBuilder = new ContainerBuilder();
+$loader = new YamlFileLoader($containerBuilder, new FileLocator(__DIR__));
+$loader->load('../config/services.yaml');
 
 // Create the Application
 $application = new Symfony\Component\Console\Application;
 
 // Register commands
 $application->add(
-    new \MarkdownBlog\Console\GeneratePages(
-        configDir: __DIR__ . '/../config/',
-        templatesDir: __DIR__ . '/../template/',
-        publicDir: __DIR__ . '/../public/',
-        pagesConfigParser: new \MarkdownBlog\Parser\PagesConfigParser(
-            yamlParser: new \MarkdownBlog\Parser\YamlParser(),
-            fileLoader: new \MarkdownBlog\IO\FileLoader()
-        ),
-        pageGenerator: new \MarkdownBlog\Generator\HtmlPageGenerator(
-            markdownDir: __DIR__ . '/../markdown/',
-            outputDir: __DIR__ . '/../public/',
-            templateDir: __DIR__ . '/../template/',
-            markdownToHtml: new \MarkdownBlog\Transformer\MarkdownToHtml(),
-            fileLoader: new \MarkdownBlog\IO\FileLoader(),
-            fileWriter: new \MarkdownBlog\IO\FileWriter(),
-            pagesListGenerator: new \MarkdownBlog\Generator\PagesListGenerator()
-        )
-    )
+    $containerBuilder->get('command.generate-pages')
 );
 
 // Run it
