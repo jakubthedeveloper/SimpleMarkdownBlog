@@ -55,8 +55,8 @@ class PagesConfigParserTest extends TestCase
             ->method("parse")
             ->willReturn($pagesData);
 
-        $actual = $this->pagesConfigParser->parse("pages.yaml");
-        $actual = iterator_to_array($actual);
+        $pagesConfigCollection = $this->pagesConfigParser->parse("pages.yaml");
+        $actual = $pagesConfigCollection->all();
 
         $this->assertInstanceOf(PageConfigDto::class, $actual[0]);
         $this->assertEquals($pagesData['pages']['index']['title'], $actual[0]->title);

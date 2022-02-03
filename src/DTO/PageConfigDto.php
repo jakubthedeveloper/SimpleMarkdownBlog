@@ -13,8 +13,8 @@ class PageConfigDto
         public readonly string $markdownFile,
         public readonly string $outputFile,
         public readonly string $templateFile = self::DEFAULT_TEMPLATE,
-        public readonly ?string $description,
-        public readonly ?string $image
+        public readonly ?string $description = null,
+        public readonly ?string $image = null
     ) {
 
     }

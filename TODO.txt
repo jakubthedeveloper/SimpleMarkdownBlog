@@ -4,6 +4,5 @@
 - Example blog preview (GitHub pages?)
 - Command for generating missing pages-config entries
 - Readme
-- finish PagesListGenerator
 - convert this app to library (composer package)
 

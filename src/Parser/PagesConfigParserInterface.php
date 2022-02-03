@@ -2,12 +2,12 @@
 
 namespace MarkdownBlog\Parser;
 
-use MarkdownBlog\DTO\PageConfigDto;
+use MarkdownBlog\Collection\PagesConfigCollection;
 
 interface PagesConfigParserInterface
 {
     /**
-     * @return iterable|PageConfigDto[]
+     * @return PagesConfigCollection
      */
-    public function parse(string $yamlFilePath): iterable;
+    public function parse(string $yamlFilePath): PagesConfigCollection;
 }

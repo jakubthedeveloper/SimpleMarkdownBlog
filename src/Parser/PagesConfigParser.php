@@ -2,6 +2,7 @@
 
 namespace MarkdownBlog\Parser;
 
+use MarkdownBlog\Collection\PagesConfigCollection;
 use MarkdownBlog\DTO\PageConfigDto;
 use MarkdownBlog\Exception\InvalidConfiguration;
 use MarkdownBlog\Exception\UnableToParse;
@@ -23,8 +24,9 @@ class PagesConfigParser implements PagesConfigParserInterface
 
     }
 
-    public function parse(string $yamlFilePath): iterable
+    public function parse(string $yamlFilePath): PagesConfigCollection
     {
+        $collection = new PagesConfigCollection();
         $yamlContents = $this->fileLoader->getFileContent($yamlFilePath);
 
         try {
@@ -38,10 +40,12 @@ class PagesConfigParser implements PagesConfigParserInterface
         $this->validateConfig($config);
 
         foreach ($config['pages'] as $key => $page) {
-            yield PageConfigDto::fromArray(
-                $page
+            $collection->add(
+                PageConfigDto::fromArray($page)
             );
         }
+
+        return $collection;
     }
 
     private function validateConfig(array $config): void

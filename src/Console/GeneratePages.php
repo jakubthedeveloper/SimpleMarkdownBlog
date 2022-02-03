@@ -2,10 +2,10 @@
 
 namespace MarkdownBlog\Console;
 
+use MarkdownBlog\Collection\PagesConfigCollection;
+use MarkdownBlog\Config\PagesConfigInterface;
 use MarkdownBlog\DTO\PageConfigDto;
-use MarkdownBlog\Exception\InvalidConfiguration;
 use MarkdownBlog\Generator\PageGeneratorInterface;
-use MarkdownBlog\Parser\PagesConfigParserInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -18,7 +18,7 @@ class GeneratePages extends Command
         private string                     $configDir,
         private string                     $templatesDir,
         private string                     $publicDir,
-        private PagesConfigParserInterface $pagesConfigParser,
+        private PagesConfigInterface       $pagesConfig,
         private PageGeneratorInterface     $pageGenerator
     ) {
         parent::__construct(self::$defaultName);
@@ -31,7 +31,7 @@ class GeneratePages extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $config = $this->getPagesConfig();
+        $config = $this->pagesConfig->getPagesConfig();
         $this->generateHtml($config);
 
         copy(
@@ -42,20 +42,12 @@ class GeneratePages extends Command
         return Command::SUCCESS;
     }
 
-    /**
-     * @return iterable|PageConfigDto[]
-     */
-    private function getPagesConfig(): iterable
-    {
-        return $this->pagesConfigParser->parse($this->configDir . '/pages.yaml');
-    }
-
-    private function generateHtml(iterable $pages): void
+    private function generateHtml(PagesConfigCollection $pages): void
     {
         /**
          * @var PageConfigDto $page
          */
-        foreach ($pages as $page)
+        foreach ($pages->all() as $page)
         {
             $this->pageGenerator->generate($page);
         }
