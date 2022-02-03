@@ -1,8 +1,9 @@
+- Header
+- Footer
 - Side menu
-- PhpUnit tests
-- GitHub actions
-- Example blog preview (GitHub pages?)
-- Command for generating missing pages-config entries
+- PhpUnit testss
 - Readme
 - convert this app to library (composer package)
+- Example blog preview (GitHub pages?)
+- GitHub actions
 
