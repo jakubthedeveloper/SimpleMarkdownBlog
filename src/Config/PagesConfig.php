@@ -17,9 +17,6 @@ class PagesConfig implements PagesConfigInterface
 
     }
 
-    /**
-     * @return PagesConfigCollection
-     */
     public function getPagesConfig(): PagesConfigCollection
     {
         if (null === self::$pagesConfig) {

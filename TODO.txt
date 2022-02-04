@@ -1,7 +1,6 @@
-- Header
 - Footer
 - Side menu
-- PhpUnit testss
+- PhpUnit tests
 - Readme
 - convert this app to library (composer package)
 - Example blog preview (GitHub pages?)

@@ -2,6 +2,7 @@
 
 namespace MarkdownBlog\Generator;
 
+use MarkdownBlog\Config\BlogConfigInterface;
 use MarkdownBlog\DTO\PageConfigDto;
 use MarkdownBlog\IO\FileLoaderInterface;
 use MarkdownBlog\IO\FileWriterInterface;
@@ -16,7 +17,8 @@ class HtmlPageGenerator implements PageGeneratorInterface
         private MarkdownToHtmlInterface $markdownToHtml,
         private FileLoaderInterface     $fileLoader,
         private FileWriterInterface     $fileWriter,
-        private ListGeneratorInterface  $pagesListGenerator
+        private ListGeneratorInterface  $pagesListGenerator,
+        private BlogConfigInterface     $blogConfig
     ) {
 
     }
@@ -73,6 +75,14 @@ class HtmlPageGenerator implements PageGeneratorInterface
             $html = str_replace(
                 '__IMAGE__',
                 $page->image ? './images/' . $page->image : '',
+                $html
+            );
+        }
+
+        if (false !== stripos($html, '__BLOG_TITLE__')) {
+            $html = str_replace(
+                '__BLOG_TITLE__',
+                $this->blogConfig->getTitle(),
                 $html
             );
         }

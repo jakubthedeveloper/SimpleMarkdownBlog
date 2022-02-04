@@ -10,6 +10,21 @@ services:
     arguments:
       $yamlParser: '@yaml_parser'
       $fileLoader: '@file_loader'
+  blog_config_parser:
+    class: \MarkdownBlog\Parser\BlogConfigParser
+    arguments:
+      $yamlParser: '@yaml_parser'
+      $fileLoader: '@file_loader'
+  pages_config:
+    class: \MarkdownBlog\Config\PagesConfig
+    arguments:
+      $configDir: 'config/'
+      $pagesConfigParser: '@pages_config_parser'
+  blog_config:
+    class: \MarkdownBlog\Config\BlogConfig
+    arguments:
+      $configDir: 'config/'
+      $pagesConfigParser: '@blog_config_parser'
   markdown_to_html:
     class: \MarkdownBlog\Transformer\MarkdownToHtml
   pages_list_generator:
@@ -26,6 +41,7 @@ services:
       $fileLoader: '@file_loader'
       $fileWriter: '@file_writer'
       $pagesListGenerator: '@pages_list_generator'
+      $blogConfig: '@blog_config'
   command.generate-pages:
     class: \MarkdownBlog\Console\GeneratePages
     arguments:
@@ -34,8 +50,3 @@ services:
       $publicDir: 'public/'
       $pagesConfig: '@pages_config'
       $pageGenerator: '@html_page_generator'
-  pages_config:
-    class: \MarkdownBlog\Config\PagesConfig
-    arguments:
-      $configDir: 'config/'
-      $pagesConfigParser: '@pages_config_parser'
