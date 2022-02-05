@@ -2,7 +2,6 @@
 - Side menu
 - PhpUnit tests
 - Readme
-- convert this app to library (composer package)
 - Example blog preview (GitHub pages?)
 - GitHub actions
 

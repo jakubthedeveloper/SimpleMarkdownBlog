@@ -1,6 +1,7 @@
 {
   "name": "jakub-the-developer/markdown-blog",
   "description": "Simple blog/website application that converts markdown files to html.",
+  "type": "library",
   "license": "MIT",
   "autoload": {
     "psr-4": {"MarkdownBlog\\": "src"}
