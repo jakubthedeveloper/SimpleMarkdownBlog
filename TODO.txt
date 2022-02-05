@@ -1,4 +1,4 @@
 - PhpUnit tests
 - Readme
-- Example blog preview (GitHub pages?)
+- Example blog release (GitHub pages?)
 - GitHub actions
