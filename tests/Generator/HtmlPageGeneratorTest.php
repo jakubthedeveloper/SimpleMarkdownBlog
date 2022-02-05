@@ -84,6 +84,10 @@ class HtmlPageGeneratorTest extends TestCase
             ->method('getTitle')
             ->willReturn('My blog title');
 
+        $this->blogConfig->expects($this->any())
+            ->method('getFooterText')
+            ->willReturn('&copy; My footer');
+
         $this->generator->generate(
             new PageConfigDto(
                 title: "test title",
@@ -147,7 +151,7 @@ class HtmlPageGeneratorTest extends TestCase
             [
                 <<<HTML
                 <html>
-                    <head title="__TITLE__"></head><body><h1>__BLOG_TITLE__</h1> __PAGE_CONTENT__</body>
+                    <head title="__TITLE__"></head><body><h1>__BLOG_TITLE__</h1> __PAGE_CONTENT__ <div class="footer">__FOOTER_TEXT__</div></body>
                 </html>
                 HTML,
                 <<<HTML
@@ -155,7 +159,7 @@ class HtmlPageGeneratorTest extends TestCase
                 HTML,
                 <<<HTML
                 <html>
-                    <head title="test title"></head><body><h1>My blog title</h1> Test content</body>
+                    <head title="test title"></head><body><h1>My blog title</h1> Test content <div class="footer">&copy; My footer</div></body>
                 </html>
                 HTML
             ]

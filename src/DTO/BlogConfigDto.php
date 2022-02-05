@@ -7,7 +7,8 @@ use JetBrains\PhpStorm\Pure;
 class BlogConfigDto
 {
     public function __construct(
-        public readonly string $title
+        public readonly string $title,
+        public readonly string $footerText
     ) {
 
     }

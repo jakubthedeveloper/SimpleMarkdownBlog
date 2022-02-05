@@ -21,6 +21,11 @@ class BlogConfig implements BlogConfigInterface
         return $this->getConfig()->title;
     }
 
+    public function getFooterText(): string
+    {
+        return $this->getConfig()->footerText;
+    }
+
     private function getConfig(): BlogConfigDto
     {
         if (null === self::$blogConfig) {

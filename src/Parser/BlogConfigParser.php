@@ -12,6 +12,7 @@ class BlogConfigParser implements BlogConfigParserInterface
 {
     private const REQUIRED_PROPERTIES = [
         'title',
+        'footer_text'
     ];
 
     public function __construct(
@@ -36,7 +37,8 @@ class BlogConfigParser implements BlogConfigParserInterface
         $this->validateConfig($config);
 
         return new BlogConfigDto(
-            title: $config['blog']['title']
+            title: $config['blog']['title'],
+            footerText: $config['blog']['footer_text']
         );
     }
 

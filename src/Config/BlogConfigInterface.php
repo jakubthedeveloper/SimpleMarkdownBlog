@@ -8,4 +8,6 @@ interface BlogConfigInterface
 {
     public function getTitle(): string;
 
+    public function getFooterText(): string;
+
 }

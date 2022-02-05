@@ -87,6 +87,14 @@ class HtmlPageGenerator implements PageGeneratorInterface
             );
         }
 
+        if (false !== stripos($html, '__FOOTER_TEXT__')) {
+            $html = str_replace(
+                '__FOOTER_TEXT__',
+                $this->blogConfig->getFooterText(),
+                $html
+            );
+        }
+
         // Replace another tags here
 
         return $html;

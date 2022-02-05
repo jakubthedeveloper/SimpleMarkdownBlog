@@ -32,7 +32,8 @@ class BlogConfigParserTest extends TestCase
     {
         $blogData = [
             'blog' => [
-                'title' => 'My awesome blog.'
+                'title' => 'My awesome blog.',
+                'footer_text' => '&copy; Mr. Blogger'
             ]
         ];
 
@@ -109,9 +110,19 @@ class BlogConfigParserTest extends TestCase
         return [
             [
                 [
-                    'blog' => ['some_field' => 'some_value']
+                    'blog' => [
+                        'footer_text' => '&copy; Mr. Blogger'
+                    ]
                 ],
                 'title'
+            ],
+            [
+                [
+                    'blog' => [
+                        'title' => 'My pretty blog'
+                    ]
+                ],
+                'footer_text'
             ]
         ];
     }

@@ -1,4 +1,3 @@
-- Footer
 - Side menu
 - PhpUnit tests
 - Readme
