@@ -26,6 +26,11 @@ class BlogConfig implements BlogConfigInterface
         return $this->getConfig()->footerText;
     }
 
+    public function getShortPagesListItemsCount(): int
+    {
+        return $this->getConfig()->shortPagesListItemsCount;
+    }
+
     private function getConfig(): BlogConfigDto
     {
         if (null === self::$blogConfig) {

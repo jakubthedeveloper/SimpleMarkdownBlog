@@ -66,4 +66,53 @@ class PagesListGeneratorTest extends TestCase
 
         $this->assertEquals($expected, $actual);
     }
+
+
+    public function testShortPagesListHtml(): void
+    {
+        $collection = new PagesConfigCollection();
+
+        $collection->add(
+            config: new PageConfigDto(
+                title: 'First page',
+                markdownFile: 'test.md',
+                outputFile: 'first.html',
+                templateFile: 'test.html'
+            )
+        );
+
+        $collection->add(
+            config: new PageConfigDto(
+                title: 'Second page',
+                markdownFile: 'test.md',
+                outputFile: 'second.html',
+                templateFile: 'test.html'
+            )
+        );
+
+        $collection->add(
+            config: new PageConfigDto(
+                title: 'Third page',
+                markdownFile: 'test.md',
+                outputFile: 'third.html',
+                templateFile: 'test.html'
+            )
+        );
+
+        $this->pagesConfig->expects($this->once())
+            ->method('getPagesConfig')
+            ->willReturn($collection);
+
+        $actual = $this->pagesListGenerator->generateShort(2);
+
+        $expected = <<<HTML
+                    <ul class="pages-list">
+                    <li><a href="first.html">First page</a></li>
+                    <li><a href="second.html">Second page</a></li>
+                    </ul>
+
+                    HTML;
+
+        $this->assertEquals($expected, $actual);
+    }
 }

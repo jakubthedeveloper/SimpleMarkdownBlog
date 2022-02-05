@@ -33,7 +33,8 @@ class BlogConfigParserTest extends TestCase
         $blogData = [
             'blog' => [
                 'title' => 'My awesome blog.',
-                'footer_text' => '&copy; Mr. Blogger'
+                'footer_text' => '&copy; Mr. Blogger',
+                'short_pages_list_items_count' => 10
             ]
         ];
 

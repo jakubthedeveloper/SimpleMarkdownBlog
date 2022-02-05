@@ -1,4 +1,3 @@
-- Side menu
 - PhpUnit tests
 - Readme
 - Example blog preview (GitHub pages?)

@@ -32,7 +32,8 @@ class BlogConfigParserTest extends TestCase
             ->willReturn(
                 new BlogConfigDto(
                     title: "Test blog title",
-                    footerText: "Test blog footer"
+                    footerText: "Test blog footer",
+                    shortPagesListItemsCount: 10
                 )
             );
 

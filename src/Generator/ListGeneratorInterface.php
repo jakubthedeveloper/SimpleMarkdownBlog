@@ -4,5 +4,7 @@ namespace MarkdownBlog\Generator;
 
 interface ListGeneratorInterface
 {
-    public function generate(): string;
+    public function generateShort(int $limit): string;
+
+    public function generate(?int $limit = null): string;
 }

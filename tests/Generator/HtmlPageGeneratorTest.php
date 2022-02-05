@@ -73,6 +73,10 @@ class HtmlPageGeneratorTest extends TestCase
             ->method("generate")
             ->willReturn('<a href="first.html">first</a><a href="second.html">second</a>');
 
+        $this->pagesListGenerator->expects($this->any())
+            ->method("generateShort")
+            ->willReturn('<a href="first.html">first</a>');
+
         $this->fileWriter->expects($this->once())
             ->method("saveFile")
             ->with(
@@ -121,7 +125,12 @@ class HtmlPageGeneratorTest extends TestCase
             [
                 <<<HTML
                 <html>
-                    <head></head><body>__PAGES_LIST__ __PAGE_CONTENT__</body>
+                    <head></head>
+                    <body>
+                    __PAGES_LIST__
+                    <div>__PAGE_CONTENT__</div>
+                    <div>__PAGES_LIST_SHORT__</div>
+                </body>
                 </html>
                 HTML,
                 <<<HTML
@@ -129,7 +138,12 @@ class HtmlPageGeneratorTest extends TestCase
                 HTML,
                 <<<HTML
                 <html>
-                    <head></head><body><a href="first.html">first</a><a href="second.html">second</a> <h1>Test header</h1><p>Test content</p></body>
+                    <head></head>
+                    <body>
+                    <a href="first.html">first</a><a href="second.html">second</a>
+                    <div><h1>Test header</h1><p>Test content</p></div>
+                    <div><a href="first.html">first</a><a href="second.html">second</a></div>
+                </body>
                 </html>
                 HTML
             ],

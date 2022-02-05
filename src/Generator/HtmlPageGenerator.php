@@ -55,6 +55,18 @@ class HtmlPageGenerator implements PageGeneratorInterface
             );
         }
 
+        if (false !== stripos($html, '__PAGES_LIST_SHORT__')) {
+            $pagesList = $this->pagesListGenerator->generate(
+                $this->blogConfig->getShortPagesListItemsCount()
+            );
+
+            $html = str_replace(
+                '__PAGES_LIST_SHORT__',
+                $pagesList,
+                $html
+            );
+        }
+
         if (false !== stripos($html, '__TITLE__')) {
             $html = str_replace(
                 '__TITLE__',

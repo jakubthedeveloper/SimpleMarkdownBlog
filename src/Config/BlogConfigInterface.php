@@ -10,4 +10,6 @@ interface BlogConfigInterface
 
     public function getFooterText(): string;
 
+    public function getShortPagesListItemsCount(): int;
+
 }

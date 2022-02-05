@@ -8,7 +8,8 @@ class BlogConfigDto
 {
     public function __construct(
         public readonly string $title,
-        public readonly string $footerText
+        public readonly string $footerText,
+        public readonly int $shortPagesListItemsCount
     ) {
 
     }
