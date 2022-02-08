@@ -32,6 +32,13 @@ class PagesListGeneratorTest extends TestCase
     {
         $collection = new PagesConfigCollection();
 
+        $currentPage = new PageConfigDto(
+            title: 'Current page',
+            markdownFile: 'test.md',
+            outputFile: 'current.html',
+            templateFile: 'testx.html'
+        );
+
         $collection->add(
             config: new PageConfigDto(
                 title: 'First page',
@@ -40,6 +47,8 @@ class PagesListGeneratorTest extends TestCase
                 templateFile: 'testx.html'
             )
         );
+
+        $collection->add($currentPage);
 
         $collection->add(
             config: new PageConfigDto(
@@ -54,7 +63,9 @@ class PagesListGeneratorTest extends TestCase
             ->method('getPagesConfig')
             ->willReturn($collection);
 
-        $actual = $this->pagesListGenerator->generate();
+        $actual = $this->pagesListGenerator->generate(
+            currentPage: $currentPage
+        );
 
         $expected = <<<HTML
                     <ul class="pages-list">
@@ -70,6 +81,13 @@ class PagesListGeneratorTest extends TestCase
 
     public function testShortPagesListHtml(): void
     {
+        $currentPage = new PageConfigDto(
+            title: 'Current page',
+            markdownFile: 'current.md',
+            outputFile: 'current.html',
+            templateFile: 'test.html'
+        );
+
         $collection = new PagesConfigCollection();
 
         $collection->add(
@@ -80,6 +98,8 @@ class PagesListGeneratorTest extends TestCase
                 templateFile: 'test.html'
             )
         );
+
+        $collection->add($currentPage);
 
         $collection->add(
             config: new PageConfigDto(
@@ -103,7 +123,10 @@ class PagesListGeneratorTest extends TestCase
             ->method('getPagesConfig')
             ->willReturn($collection);
 
-        $actual = $this->pagesListGenerator->generateShort(2);
+        $actual = $this->pagesListGenerator->generateShort(
+            currentPage: $currentPage,
+            limit: 2
+        );
 
         $expected = <<<HTML
                     <ul class="pages-list">

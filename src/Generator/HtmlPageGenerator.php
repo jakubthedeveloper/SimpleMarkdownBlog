@@ -46,7 +46,9 @@ class HtmlPageGenerator implements PageGeneratorInterface
         );
 
         if (false !== stripos($html, '__PAGES_LIST__')) {
-            $pagesList = $this->pagesListGenerator->generate();
+            $pagesList = $this->pagesListGenerator->generate(
+                currentPage: $page
+            );
 
             $html = str_replace(
                 '__PAGES_LIST__',
@@ -57,7 +59,8 @@ class HtmlPageGenerator implements PageGeneratorInterface
 
         if (false !== stripos($html, '__PAGES_LIST_SHORT__')) {
             $pagesList = $this->pagesListGenerator->generate(
-                $this->blogConfig->getShortPagesListItemsCount()
+                currentPage: $page,
+                limit: $this->blogConfig->getShortPagesListItemsCount()
             );
 
             $html = str_replace(

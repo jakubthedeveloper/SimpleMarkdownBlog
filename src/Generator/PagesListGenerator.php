@@ -13,12 +13,12 @@ class PagesListGenerator implements ListGeneratorInterface
 
     }
 
-    public function generateShort(int $limit): string
+    public function generateShort(PageConfigDto $currentPage, int $limit): string
     {
-        return $this->generate($limit);
+        return $this->generate($currentPage, $limit);
     }
 
-    public function generate(?int $limit = null): string
+    public function generate(PageConfigDto $currentPage, ?int $limit = null): string
     {
         $result = '<ul class="pages-list">';
         $result .= "\n";
@@ -28,6 +28,10 @@ class PagesListGenerator implements ListGeneratorInterface
         foreach ($this->pagesConfig->getPagesConfig()->all() as $page) {
             if ($limit !== null && $i >= $limit) {
                 break;
+            }
+
+            if ($page->outputFile === $currentPage->outputFile) {
+                continue;
             }
 
             $result .= sprintf(
