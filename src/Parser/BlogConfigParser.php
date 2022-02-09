@@ -12,6 +12,7 @@ class BlogConfigParser implements BlogConfigParserInterface
 {
     private const REQUIRED_PROPERTIES = [
         'title',
+        'base_url',
         'footer_text',
         'short_pages_list_items_count'
     ];
@@ -39,6 +40,7 @@ class BlogConfigParser implements BlogConfigParserInterface
 
         return new BlogConfigDto(
             title: $config['blog']['title'],
+            baseUrl: $config['blog']['base_url'],
             footerText: $config['blog']['footer_text'],
             shortPagesListItemsCount: $config['blog']['short_pages_list_items_count']
         );

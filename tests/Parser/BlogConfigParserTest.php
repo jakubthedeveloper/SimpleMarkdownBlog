@@ -33,6 +33,7 @@ class BlogConfigParserTest extends TestCase
         $blogData = [
             'blog' => [
                 'title' => 'My awesome blog.',
+                'base_url' => 'https://blog.test',
                 'footer_text' => '&copy; Mr. Blogger',
                 'short_pages_list_items_count' => 10
             ]
@@ -100,7 +101,7 @@ class BlogConfigParserTest extends TestCase
 
         $this->expectException(InvalidConfiguration::class);
         $this->expectDeprecationMessage(
-            sprintf("log configuration property `%s` is not set.", $missingProperty)
+            sprintf("Blog configuration property `%s` is not set.", $missingProperty)
         );
 
         iterator_to_array($this->blogConfigParser->parse("some.yaml"));
@@ -112,7 +113,9 @@ class BlogConfigParserTest extends TestCase
             [
                 [
                     'blog' => [
-                        'footer_text' => '&copy; Mr. Blogger'
+                        'base_url' => "https://blog.test",
+                        'footer_text' => '&copy; Mr. Blogger',
+                        'short_pages_list_items_count' => 10
                     ]
                 ],
                 'title'
@@ -120,10 +123,32 @@ class BlogConfigParserTest extends TestCase
             [
                 [
                     'blog' => [
-                        'title' => 'My pretty blog'
+                        'title' => 'My pretty blog',
+                        'footer_text' => '&copy; Mr. Blogger',
+                        'short_pages_list_items_count' => 10
+                    ]
+                ],
+                'base_url'
+            ],
+            [
+                [
+                    'blog' => [
+                        'title' => 'My pretty blog',
+                        'base_url' => "https://blog.test",
+                        'short_pages_list_items_count' => 10
                     ]
                 ],
                 'footer_text'
+            ],
+            [
+                [
+                    'blog' => [
+                        'title' => 'My pretty blog',
+                        'base_url' => "https://blog.test",
+                        'footer_text' => '&copy; Mr. Blogger'
+                    ]
+                ],
+                'short_pages_list_items_count'
             ]
         ];
     }

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace MarkdownBlog\Config;
 
 use MarkdownBlog\DTO\BlogConfigDto;
-use MarkdownBlog\IO\FileLoader;
 use MarkdownBlog\Parser\BlogConfigParserInterface;
 use PHPUnit\Framework\TestCase;
 
@@ -32,12 +31,15 @@ class BlogConfigParserTest extends TestCase
             ->willReturn(
                 new BlogConfigDto(
                     title: "Test blog title",
+                    baseUrl: "https://blog.test",
                     footerText: "Test blog footer",
                     shortPagesListItemsCount: 10
                 )
             );
 
         $this->assertEquals("Test blog title", $this->blogConfig->getTitle());
+        $this->assertEquals("https://blog.test", $this->blogConfig->getBaseUrl());
         $this->assertEquals("Test blog footer", $this->blogConfig->getFooterText());
+        $this->assertEquals(10, $this->blogConfig->getShortPagesListItemsCount());
     }
 }

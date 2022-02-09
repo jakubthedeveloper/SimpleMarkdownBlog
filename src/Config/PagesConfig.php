@@ -3,7 +3,6 @@
 namespace MarkdownBlog\Config;
 
 use MarkdownBlog\Collection\PagesConfigCollection;
-use MarkdownBlog\DTO\PageConfigDto;
 use MarkdownBlog\Parser\PagesConfigParserInterface;
 
 class PagesConfig implements PagesConfigInterface

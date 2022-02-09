@@ -14,7 +14,8 @@ class PageConfigDto
         public readonly string $outputFile,
         public readonly string $templateFile = self::DEFAULT_TEMPLATE,
         public readonly ?string $description = null,
-        public readonly ?string $image = null
+        public readonly ?string $image = null,
+        public readonly ?string $type = null
     ) {
 
     }
@@ -27,7 +28,8 @@ class PageConfigDto
             $pageData['output_file'],
             $pageData['template_file'] ?? self::DEFAULT_TEMPLATE,
             $pageData['description'] ?? null,
-            $pageData['image'] ?? null
+            $pageData['image'] ?? null,
+            $pageData['type'] ?? null,
         );
     }
 }

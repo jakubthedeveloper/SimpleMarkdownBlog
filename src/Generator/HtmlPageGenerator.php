@@ -89,7 +89,7 @@ class HtmlPageGenerator implements PageGeneratorInterface
         if (false !== stripos($html, '__IMAGE__')) {
             $html = str_replace(
                 '__IMAGE__',
-                $page->image ? './images/' . $page->image : '',
+                $page->image ? $this->blogConfig->getBaseUrl() . '/images/' . $page->image : '',
                 $html
             );
         }
@@ -106,6 +106,22 @@ class HtmlPageGenerator implements PageGeneratorInterface
             $html = str_replace(
                 '__FOOTER_TEXT__',
                 $this->blogConfig->getFooterText(),
+                $html
+            );
+        }
+
+        if (false !== stripos($html, '__PAGE_URL__')) {
+            $html = str_replace(
+                '__PAGE_URL__',
+                $this->blogConfig->getBaseUrl() . '/' . $page->outputFile,
+                $html
+            );
+        }
+
+        if (false !== stripos($html, '__PAGE_TYPE__')) {
+            $html = str_replace(
+                '__PAGE_TYPE__',
+                $page->type,
                 $html
             );
         }

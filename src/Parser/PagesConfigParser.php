@@ -39,7 +39,7 @@ class PagesConfigParser implements PagesConfigParserInterface
 
         $this->validateConfig($config);
 
-        foreach ($config['pages'] as $key => $page) {
+        foreach ($config['pages'] as $page) {
             $collection->add(
                 PageConfigDto::fromArray($page)
             );

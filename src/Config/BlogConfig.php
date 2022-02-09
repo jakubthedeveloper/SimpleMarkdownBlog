@@ -21,6 +21,11 @@ class BlogConfig implements BlogConfigInterface
         return $this->getConfig()->title;
     }
 
+    public function getBaseUrl(): string
+    {
+        return $this->getConfig()->baseUrl;
+    }
+
     public function getFooterText(): string
     {
         return $this->getConfig()->footerText;

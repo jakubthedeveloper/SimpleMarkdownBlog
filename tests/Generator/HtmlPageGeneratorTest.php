@@ -23,7 +23,7 @@ use PHPUnit\Framework\TestCase;
  */
 class HtmlPageGeneratorTest extends TestCase
 {
-    const TEST_OUTPUT_FILE = "test_output_file";
+    const TEST_OUTPUT_FILE = "test_output_file.html";
     const TEST_OUTPUT_DIR = "test_output_dir/";
 
     public function setUp(): void
@@ -77,20 +77,24 @@ class HtmlPageGeneratorTest extends TestCase
             ->method("generateShort")
             ->willReturn('<a href="first.html">first</a>');
 
+        $this->blogConfig->expects($this->any())
+            ->method('getTitle')
+            ->willReturn('My blog title');
+
+        $this->blogConfig->expects($this->any())
+            ->method('getBaseUrl')
+            ->willReturn('https://blog.test');
+
+        $this->blogConfig->expects($this->any())
+            ->method('getFooterText')
+            ->willReturn('&copy; My footer');
+
         $this->fileWriter->expects($this->once())
             ->method("saveFile")
             ->with(
                 self::TEST_OUTPUT_DIR . self::TEST_OUTPUT_FILE,
                 $expectedHtml
             );
-
-        $this->blogConfig->expects($this->any())
-            ->method('getTitle')
-            ->willReturn('My blog title');
-
-        $this->blogConfig->expects($this->any())
-            ->method('getFooterText')
-            ->willReturn('&copy; My footer');
 
         $this->generator->generate(
             new PageConfigDto(
@@ -99,7 +103,8 @@ class HtmlPageGeneratorTest extends TestCase
                 outputFile: self::TEST_OUTPUT_FILE,
                 templateFile: "test_template_file",
                 description: "test description",
-                image: "test_image.png"
+                image: "test_image.png",
+                type: "article"
             )
         );
     }
@@ -150,7 +155,7 @@ class HtmlPageGeneratorTest extends TestCase
             [
                 <<<HTML
                 <html>
-                    <head title="__TITLE__"></head><body><h1>__TITLE__</h1> <h2>__DESCRIPTION__</h2> <img src="__IMAGE__" /> <p>__PAGE_CONTENT__</p></body>
+                    <head><title>__TITLE__</title></head><body><h1>__TITLE__</h1> <h2>__DESCRIPTION__</h2> <img src="__IMAGE__" /> <p>__PAGE_CONTENT__</p></body>
                 </html>
                 HTML,
                 <<<HTML
@@ -158,14 +163,19 @@ class HtmlPageGeneratorTest extends TestCase
                 HTML,
                 <<<HTML
                 <html>
-                    <head title="test title"></head><body><h1>test title</h1> <h2>test description</h2> <img src="./images/test_image.png" /> <p>Test content</p></body>
+                    <head><title>test title</title></head><body><h1>test title</h1> <h2>test description</h2> <img src="https://blog.test/images/test_image.png" /> <p>Test content</p></body>
                 </html>
                 HTML
             ],
             [
                 <<<HTML
                 <html>
-                    <head title="__TITLE__"></head><body><h1>__BLOG_TITLE__</h1> __PAGE_CONTENT__ <div class="footer">__FOOTER_TEXT__</div></body>
+                    <head>
+                        <title>__TITLE__</title>
+                        <meta property="og:url" content="__PAGE_URL__" />
+                        <meta property="og:type" content="__PAGE_TYPE__" />
+                    </head>
+                    <body><h1>__BLOG_TITLE__</h1> __PAGE_CONTENT__ <div class="footer">__FOOTER_TEXT__</div></body>
                 </html>
                 HTML,
                 <<<HTML
@@ -173,7 +183,12 @@ class HtmlPageGeneratorTest extends TestCase
                 HTML,
                 <<<HTML
                 <html>
-                    <head title="test title"></head><body><h1>My blog title</h1> Test content <div class="footer">&copy; My footer</div></body>
+                    <head>
+                        <title>test title</title>
+                        <meta property="og:url" content="https://blog.test/test_output_file.html" />
+                        <meta property="og:type" content="article" />
+                    </head>
+                    <body><h1>My blog title</h1> Test content <div class="footer">&copy; My footer</div></body>
                 </html>
                 HTML
             ]
