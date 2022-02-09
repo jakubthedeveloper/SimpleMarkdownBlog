@@ -26,7 +26,7 @@ class SitemapGenerator implements SitemapGeneratorInterface
 
         foreach ($this->pagesConfig->getPagesConfig()->all() as $page) {
             $generator->addURL(
-                path: $page->outputFile,
+                path: '/' . $page->outputFile,
                 lastModified: new \DateTime(),
                 changeFrequency: 'daily',
                 priority: 0.5
